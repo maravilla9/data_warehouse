@@ -14,26 +14,27 @@
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:Poppins,system-ui,sans-serif;background:var(--fondo);color:var(--tinta);min-height:100vh}
-.wrap{max-width:900px;margin:0 auto;padding:16px}
+.wrap{max-width:860px;margin:0 auto;padding:12px 16px}
+body{font-size:15px}
 header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-header img{height:46px}
+header img{height:38px}
 .badges{display:flex;gap:8px;flex-wrap:wrap}
 .badge{font-size:12px;font-weight:700;padding:6px 12px;border-radius:99px;color:#fff}
 .b1{background:var(--rosa)} .b2{background:var(--morado)}
-.top{display:flex;gap:10px;align-items:center;margin:14px 0 8px;flex-wrap:wrap}
+.top{display:flex;gap:10px;align-items:center;margin:10px 0 6px;flex-wrap:wrap}
 .timer{font-weight:700;background:#fff;border-radius:12px;padding:6px 12px;box-shadow:0 2px 8px rgba(0,0,0,.06);font-variant-numeric:tabular-nums}
 .bar{flex:1;min-width:160px;height:12px;background:#E3E8E0;border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--verde),var(--turq));transition:width .6s}
-.steps{display:none;gap:6px;margin:0 0 14px;flex-wrap:wrap}
-.steps span{flex:1;min-width:92px;text-align:center;font-size:12px;font-weight:700;padding:7px 4px;border-radius:10px;background:#E6EAE3;color:#8A9187;transition:all .3s}
+.steps{display:none;gap:6px;margin:0 0 10px;flex-wrap:wrap}
+.steps span{flex:1;min-width:92px;text-align:center;font-size:11.5px;font-weight:700;padding:5px 4px;border-radius:10px;background:#E6EAE3;color:#8A9187;transition:all .3s}
 .steps span.on{background:var(--morado);color:#fff;transform:translateY(-2px)}
 .steps span.ok{background:#DDF5DD;color:var(--verde-d)}
-.card{background:#fff;border-radius:20px;padding:22px;box-shadow:0 6px 24px rgba(16,26,46,.08);animation:pop .35s ease}
+.card{background:#fff;border-radius:18px;padding:18px 20px;box-shadow:0 6px 24px rgba(16,26,46,.08);animation:pop .35s ease}
 @keyframes pop{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 h1{font-size:28px;margin:0 0 6px;line-height:1.2}
-h2{font-size:22px;margin:0 0 4px}
+h2{font-size:20px;margin:0 0 4px}
 .mis{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
-p{line-height:1.55;margin:8px 0}
+p{line-height:1.5;margin:6px 0}
 .story{background:#FFF4E6;border-left:5px solid var(--naranja);border-radius:12px;padding:12px 14px;margin:14px 0}
 .kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0}
 .kpi{background:var(--noche);color:#fff;border-radius:14px;padding:12px;text-align:center}
@@ -41,11 +42,11 @@ p{line-height:1.55;margin:8px 0}
 .kpi small{color:#AFC0DA}
 input[type=text]{width:100%;font:inherit;font-size:17px;padding:12px 14px;border:2px solid #D6DCD2;border-radius:12px;outline:none}
 input[type=text]:focus{border-color:var(--verde)}
-.btn{font:inherit;font-weight:700;font-size:16px;border:0;border-radius:14px;padding:13px 22px;cursor:pointer;background:var(--verde);color:#fff;transition:transform .1s,background .2s;text-decoration:none;display:inline-block;text-align:center}
+.btn{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:12px;padding:11px 20px;cursor:pointer;background:var(--verde);color:#fff;transition:transform .1s,background .2s;text-decoration:none;display:inline-block;text-align:center}
 .btn:active{transform:scale(.97)} .btn:hover{background:var(--verde-d)}
 .btn.sec{background:#EEF1EC;color:var(--tinta)}
 .btn:disabled{opacity:.45;cursor:not-allowed}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
 .msg{margin-top:12px;border-radius:12px;padding:10px 14px;font-size:14px;display:none}
 .msg.ojo{display:block;background:#FDE8E8;color:#8E1B1B;border-left:5px solid var(--rojo)}
 .msg.bien{display:block;background:#E3F7E3;color:#145A14;border-left:5px solid var(--verde)}
@@ -60,7 +61,7 @@ input[type=text]:focus{border-color:var(--verde)}
 .src.bad::after{content:"✖";background:var(--rojo)}
 .cnt{font-weight:700;color:var(--morado);margin-top:10px}
 .src.bad{border-color:var(--rojo);background:#FDE8E8}
-.cube{width:150px;height:150px;border-radius:24px;background:linear-gradient(145deg,#7B2FD0,#2E7DD7);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;text-align:center;box-shadow:0 10px 30px rgba(123,47,208,.35);position:relative;overflow:hidden}
+.cube{width:130px;height:130px;border-radius:24px;background:linear-gradient(145deg,#7B2FD0,#2E7DD7);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;text-align:center;box-shadow:0 10px 30px rgba(123,47,208,.35);position:relative;overflow:hidden}
 .cube .big{font-size:48px;line-height:1}
 .cube .fill{position:absolute;left:0;bottom:0;width:100%;height:0;background:rgba(7,183,8,.55);transition:height 2.4s ease}
 .cube > *{position:relative;z-index:1}
@@ -73,18 +74,18 @@ input[type=text]:focus{border-color:var(--verde)}
 @keyframes slidein{from{transform:translateX(-40px);opacity:0}to{transform:none;opacity:1}}
 .rec code{font-family:ui-monospace,Consolas,monospace;font-weight:700;background:#FDE8E8;padding:2px 6px;border-radius:6px}
 .rec.clean code{background:#DDF5DD}
-.opts{display:grid;gap:10px;margin-top:10px}
-.opt{text-align:left;border:2px solid #D6DCD2;background:#fff;border-radius:14px;padding:12px 14px;font:inherit;font-size:15px;cursor:pointer;transition:all .15s}
+.opts{display:grid;gap:8px;margin-top:8px}
+.opt{text-align:left;border:2px solid #D6DCD2;background:#fff;border-radius:12px;padding:9px 13px;font:inherit;font-size:14.5px;cursor:pointer;transition:all .15s}
 .opt:hover{border-color:var(--morado)}
 .opt.sel{border-color:var(--verde);background:#EAF9EA}
 .opt.pick{border-color:var(--morado);background:#EDE3FA;box-shadow:0 0 0 3px rgba(123,47,208,.15)}
 .opt.pick::before{content:"👉 "}
-.guia{background:#E8F1FD;border-left:5px solid var(--azul);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14.5px;color:#1E3F6E}
+.guia{background:#E8F1FD;border-left:5px solid var(--azul);border-radius:12px;padding:8px 12px;margin:8px 0;font-size:14px;color:#1E3F6E}
 .guia b{color:#123058}
 .sim .guia{background:#16304F;color:#CFE0F7;border-left-color:#5AA2F0}.sim .guia b{color:#fff}
 .sim .opt.pick{background:#2A2350;border-color:#A77BFF}
 /* carga */
-.counter{font-size:40px;font-weight:800;color:var(--morado);text-align:center;font-variant-numeric:tabular-nums}
+.counter{font-size:34px;font-weight:800;color:var(--morado);text-align:center;font-variant-numeric:tabular-nums}
 /* explotación */
 .dash{background:var(--noche);color:#fff;border-radius:18px;padding:16px;margin-top:12px}
 .qbtns{display:grid;gap:8px}
@@ -101,19 +102,19 @@ input[type=text]:focus{border-color:var(--verde)}
 .chart .v{text-align:right;font-weight:700}
 .insight{margin-top:10px;background:#1E3A28;border-radius:10px;padding:8px 12px;font-size:14px;color:#BFF5C3;display:none}
 /* oltp olap */
-.flash{background:#F7F8FB;border-radius:16px;padding:20px;font-size:18px;font-weight:600;text-align:center;min-height:96px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:12px 0}
+.flash{background:#F7F8FB;border-radius:16px;padding:14px;font-size:17px;font-weight:600;text-align:center;min-height:80px;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:12px 0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.two .btn{padding:16px}
+.two .btn{padding:12px}
 .oltp{background:var(--naranja)} .oltp:hover{background:#C96500}
 .olap{background:var(--morado)} .olap:hover{background:#6122AD}
 /* simulador */
-.sim{background:var(--noche);color:#fff;border-radius:20px;padding:20px}
+.sim{background:var(--noche);color:#fff;border-radius:18px;padding:16px 18px}
 .simtop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center}
-.money{font-size:28px;font-weight:800;color:#7CFC8A;font-variant-numeric:tabular-nums}
-.alert{background:#2A1620;border:2px solid var(--rosa);border-radius:14px;padding:14px;margin:14px 0;animation:pulse 1.4s ease 2}
+.money{font-size:24px;font-weight:800;color:#7CFC8A;font-variant-numeric:tabular-nums}
+.alert{background:#2A1620;border:2px solid var(--rosa);border-radius:14px;padding:10px 14px;margin:10px 0;animation:pulse 1.4s ease 2}
 @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(214,51,138,.6)}50%{box-shadow:0 0 0 10px rgba(214,51,138,0)}}
 .alert .hd{font-size:12px;font-weight:800;color:#FF9BCB;letter-spacing:.06em}
-.hint{background:var(--noche2);border-radius:12px;padding:10px 12px;font-size:14px;color:#BFD0EA;margin-bottom:10px}
+.hint{background:var(--noche2);border-radius:12px;padding:8px 12px;font-size:14px;color:#BFD0EA;margin-bottom:6px}
 .sim .opt{background:var(--noche2);color:#fff;border-color:#2E3D5E}
 .sim .opt:hover{border-color:var(--verde)}
 .sim .msg.ojo{background:#3A1A1A;color:#FFC9C9}
@@ -131,7 +132,9 @@ input[type=text]:focus{border-color:var(--verde)}
 .share .btn{font-size:14px;padding:11px}
 .wa{background:#25D366}.fb{background:#1877F2}.xx{background:#111}.cp{background:var(--turq)}.st{background:var(--rosa)}
 .chat{margin-top:14px;font-weight:700;color:var(--verde-d);text-align:center}
-footer{text-align:center;color:var(--suave);font-size:13px;margin:18px 0 8px}
+footer{text-align:center;color:var(--suave);font-size:13px;margin:14px 0 8px}
+.why{font-style:italic;color:#6B7280;font-size:13.5px;margin-top:6px;line-height:1.45}
+.sim .why{color:#C9B9C9}
 canvas#conf{position:fixed;inset:0;pointer-events:none;z-index:50}
 .shake{animation:sh .35s}
 @keyframes sh{0%,100%{transform:none}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
@@ -214,7 +217,13 @@ const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 
 function reloj() { segundos = Math.floor((Date.now() - t0) / 1000); $('#timer').textContent = '⏱️ ' + fmt(segundos); }
 const pesos = n => '$' + n.toLocaleString('es-MX');
 function msg(el, tipo, txt) {
-  el.className = 'msg ' + tipo; el.innerHTML = txt;
+  el.className = 'msg ' + tipo;
+  if (tipo === 'ojo') {
+    const cuerpo = txt.replace(/^Ojo:\s*/, '');
+    const partes = cuerpo.split('<br>');
+    el.innerHTML = `<b>✖ Revisa tu respuesta.</b><div class="why">Recuerda: ${partes[0]}</div>` + (partes.length > 1 ? `<div style="margin-top:6px">${partes.slice(1).join('<br>')}</div>` : '');
+  } else el.innerHTML = txt;
+  setTimeout(() => el.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 60);
   if (tipo === 'ojo') { sErr(); const c = el.closest('.card,.sim'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); } else sOk();
 }
 function elegir(cont, btn) {
@@ -489,7 +498,10 @@ function oltpOlap() {
   <section class="card">
     <span class="mis" style="color:var(--azul)">Ronda relámpago</span>
     <h2>¿OLTP u OLAP?</h2>
-    <p><b>OLTP</b> registra la operación del día. <b>OLAP</b> analiza para decidir.</p>
+    <div class="two" style="margin:10px 0">
+      <div style="background:#FDEBD8;border-radius:14px;padding:12px 14px;font-size:14px"><b style="color:var(--naranja);font-size:17px">🧾 OLTP</b><br><i>Online Transaction Processing</i><br>Procesamiento de transacciones en línea. <b>Registra la operación del día</b>: ventas, cobros, devoluciones.</div>
+      <div style="background:#EDE3FA;border-radius:14px;padding:12px 14px;font-size:14px"><b style="color:var(--morado);font-size:17px">📊 OLAP</b><br><i>Online Analytical Processing</i><br>Procesamiento analítico en línea. <b>Analiza datos históricos para decidir</b>: comparar, pronosticar, encontrar tendencias.</div>
+    </div>
     ${guia('Lee la situación y toca <b>OLTP</b> u <b>OLAP</b>. Después presiona <b>Siguiente situación</b>.')}
     <div class="flash" id="fl"></div>
     <div class="two"><button class="btn oltp" id="bp">🧾 OLTP<br><small>operación</small></button><button class="btn olap" id="ba">📊 OLAP<br><small>análisis</small></button></div>
@@ -554,7 +566,7 @@ function buenFin() {
   const pinta = () => {
     const a = A[k]; sAlert(); m.className = 'msg';
     const ops = a.o.map((o, i) => [o, i]).sort(() => Math.random() - .5);
-    $('#al').innerHTML = `<div class="alert"><div class="hd">${a.dia} · Decisión ${k + 1} de ${A.length}</div><p style="font-size:17px">${a.t}</p></div>
+    $('#al').innerHTML = `<div class="alert"><div class="hd">${a.dia} · Decisión ${k + 1} de ${A.length}</div><p style="font-size:16px;margin:4px 0 0">${a.t}</p></div>
       <div class="hint">📊 ${a.hint}</div>
       ${guia('Lee la alerta, revisa el dato del tablero, elige una decisión y presiona <b>«Confirmar decisión»</b>.')}
       <div class="opts" id="so">${ops.map(x => `<button class="opt" data-i="${x[1]}">${x[0][0]}</button>`).join('')}</div>
