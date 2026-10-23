@@ -54,7 +54,11 @@ input[type=text]:focus{border-color:var(--verde)}
 .sources{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 .src{border:2px solid #D6DCD2;background:#fff;border-radius:14px;padding:12px;cursor:pointer;font:inherit;font-size:14px;text-align:left;display:flex;gap:10px;align-items:center;transition:all .15s}
 .src .ic{font-size:26px}
+.src{position:relative}
 .src.sel{border-color:var(--morado);background:#EDE3FA}
+.src.sel::after{content:"✔";position:absolute;top:-9px;right:-9px;width:26px;height:26px;border-radius:50%;background:var(--morado);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.src.bad::after{content:"✖";background:var(--rojo)}
+.cnt{font-weight:700;color:var(--morado);margin-top:10px}
 .src.bad{border-color:var(--rojo);background:#FDE8E8}
 .cube{width:150px;height:150px;border-radius:24px;background:linear-gradient(145deg,#7B2FD0,#2E7DD7);display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:13px;text-align:center;box-shadow:0 10px 30px rgba(123,47,208,.35);position:relative;overflow:hidden}
 .cube .big{font-size:48px;line-height:1}
@@ -73,6 +77,12 @@ input[type=text]:focus{border-color:var(--verde)}
 .opt{text-align:left;border:2px solid #D6DCD2;background:#fff;border-radius:14px;padding:12px 14px;font:inherit;font-size:15px;cursor:pointer;transition:all .15s}
 .opt:hover{border-color:var(--morado)}
 .opt.sel{border-color:var(--verde);background:#EAF9EA}
+.opt.pick{border-color:var(--morado);background:#EDE3FA;box-shadow:0 0 0 3px rgba(123,47,208,.15)}
+.opt.pick::before{content:"👉 "}
+.guia{background:#E8F1FD;border-left:5px solid var(--azul);border-radius:12px;padding:10px 14px;margin:10px 0;font-size:14.5px;color:#1E3F6E}
+.guia b{color:#123058}
+.sim .guia{background:#16304F;color:#CFE0F7;border-left-color:#5AA2F0}.sim .guia b{color:#fff}
+.sim .opt.pick{background:#2A2350;border-color:#A77BFF}
 /* carga */
 .counter{font-size:40px;font-weight:800;color:var(--morado);text-align:center;font-variant-numeric:tabular-nums}
 /* explotación */
@@ -147,7 +157,7 @@ canvas#conf{position:fixed;inset:0;pointer-events:none;z-index:50}
     <div class="bar"><i id="prog"></i></div>
   </div>
   <div class="steps" id="steps">
-    <span>1 Extracción</span><span>2 Elaboración</span><span>3 Carga</span><span>4 Explotación</span><span>5 OLTP / OLAP</span><span>6 Buen Fin</span>
+    <span>1 Extracción</span><span>2 Elaboración</span><span>3 Carga</span><span>4 Explotación</span><span>5 OLTP / OLAP</span><span>6 Black Friday</span>
   </div>
   <main id="app"></main>
   <footer>Docente: Dr. Armando Maravilla</footer>
@@ -207,6 +217,15 @@ function msg(el, tipo, txt) {
   el.className = 'msg ' + tipo; el.innerHTML = txt;
   if (tipo === 'ojo') { sErr(); const c = el.closest('.card,.sim'); c.classList.remove('shake'); void c.offsetWidth; c.classList.add('shake'); } else sOk();
 }
+function elegir(cont, btn) {
+  let v = null;
+  cont.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    cont.querySelectorAll('.opt').forEach(x => x.classList.remove('pick'));
+    b.classList.add('pick'); v = b.dataset.i ?? b.dataset.r; btn.disabled = false; tono(520, .05);
+  });
+  return () => v;
+}
+const guia = t => `<div class="guia">👉 <b>Qué hacer:</b> ${t}</div>`;
 const esc = t => t.replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
 /* ---------- inicio ---------- */
@@ -215,15 +234,15 @@ function inicio() {
   <section class="card">
     <h1>🛒 Director comercial por un día</h1>
     <div class="story">
-      <b>Súper Del Valle</b> tiene 12 tiendas. El Buen Fin pasado se agotaron las pantallas en Monterrey el primer día y en Puebla sobraron.
+      <b>Súper Del Valle</b> tiene 12 tiendas. El Black Friday pasado se agotaron las pantallas en Monterrey el primer día y en Puebla sobraron.
       Los datos estaban en las cajas, en la tienda en línea, en la app y en los Excel de los proveedores, y nadie los juntó.
     </div>
     <div class="kpis">
       <div class="kpi"><b>12</b><small>tiendas</small></div>
       <div class="kpi"><b style="color:#FF7B7B">-$1.8 M</b><small>perdidos el año pasado</small></div>
-      <div class="kpi"><b>4</b><small>días de Buen Fin</small></div>
+      <div class="kpi"><b>4</b><small>días de Black Friday</small></div>
     </div>
-    <p>Este año <b>tú eres el director comercial</b>. Primero construye el <b>data warehouse</b> de la empresa y después úsalo para tomar decisiones en pleno Buen Fin.</p>
+    <p>Este año <b>tú eres el director comercial</b>. Primero construye el <b>data warehouse</b> de la empresa y después úsalo para tomar decisiones en pleno Black Friday.</p>
     <p><b>Escribe tu nombre para tu certificado:</b></p>
     <input type="text" id="nom" maxlength="40" placeholder="Tu nombre completo">
     <div class="row"><button class="btn" id="go" disabled>Tomar el puesto</button></div>
@@ -242,7 +261,7 @@ function extraccion() {
   etapa(0);
   const F = [
     ['🧾', 'Ventas de las cajas de las 12 tiendas', 1, 'Las cajas registran cada venta: son la fuente principal.'],
-    ['🌐', 'Pedidos de la tienda en línea', 1, 'Muchas ventas del Buen Fin son en línea: sin ellas el análisis queda incompleto.'],
+    ['🌐', 'Pedidos de la tienda en línea', 1, 'Muchas ventas del Black Friday son en línea: sin ellas el análisis queda incompleto.'],
     ['📱', 'Compras y búsquedas en la app', 1, 'La app dice qué buscan los clientes aunque no compren: es oro para decidir.'],
     ['📦', 'Excel de inventario de los proveedores', 1, 'Sin inventario no sabes cuánto puedes mandar a cada tienda.'],
     ['🎵', 'Playlist que suena en las tiendas', 0, 'La música no ayuda a decidir qué producto mandar. Un data warehouse solo guarda datos útiles para decidir.'],
@@ -252,31 +271,44 @@ function extraccion() {
   <section class="card">
     <span class="mis" style="color:var(--naranja)">Etapa 1 · Extracción</span>
     <h2>¿De dónde sacas los datos?</h2>
-    <p>Selecciona <b>solo las fuentes útiles</b> para decidir qué mandar a cada tienda y envíalas al almacén.</p>
+    <p>Para decidir qué producto mandar a cada tienda necesitas juntar datos de varias fuentes.</p>
+    ${guia('1) Toca las <b>4 fuentes útiles</b> (se marcan con ✔). 2) Presiona <b>«Enviar al almacén»</b>.')}
     <div class="extract">
       <div class="sources">${F.map((f, i) => `<button class="src" data-i="${i}"><span class="ic">${f[0]}</span><span>${f[1]}</span></button>`).join('')}</div>
       <div class="cube" id="cube"><div class="fill" id="fill"></div><div class="big">🧊</div><div>DATA<br>WAREHOUSE</div></div>
     </div>
+    <div class="cnt" id="cnt">Seleccionadas: 0</div>
     <div class="row"><button class="btn" id="env">🚀 Enviar al almacén</button></div>
     <div class="msg" id="m"></div>
   </section>`;
   const m = $('#m');
-  app.querySelectorAll('.src').forEach(b => b.onclick = () => { b.classList.toggle('sel'); b.classList.remove('bad'); tono(520, .05); });
+  const cuenta = () => $('#cnt').textContent = 'Seleccionadas: ' + app.querySelectorAll('.src.sel').length;
+  app.querySelectorAll('.src').forEach(b => b.onclick = () => {
+    if (b.classList.contains('bad')) { b.classList.remove('bad', 'sel'); }
+    else b.classList.toggle('sel');
+    tono(520, .05); cuenta(); m.className = 'msg';
+  });
   $('#env').onclick = () => {
     const sel = [...app.querySelectorAll('.src.sel')].map(b => +b.dataset.i);
-    const mala = sel.find(i => !F[i][2]);
-    if (mala !== undefined) { app.querySelector(`.src[data-i="${mala}"]`).classList.add('bad'); return msg(m, 'ojo', 'Ojo: ' + F[mala][3]); }
-    const falta = F.findIndex((f, i) => f[2] && !sel.includes(i));
-    if (falta >= 0) return msg(m, 'ojo', 'Ojo: te falta una fuente útil. ' + F[falta][3]);
+    if (!sel.length) return msg(m, 'ojo', 'Ojo: aún no seleccionas ninguna fuente. Toca las tarjetas para marcarlas con ✔ y luego envíalas.');
+    const malas = sel.filter(i => !F[i][2]);
+    if (malas.length) {
+      malas.forEach(i => app.querySelector(`.src[data-i="${i}"]`).classList.add('bad'));
+      return msg(m, 'ojo', 'Ojo: ' + malas.map(i => F[i][3]).join(' ') + '<br>Toca la tarjeta marcada con ✖ para quitarla.');
+    }
+    const faltan = F.map((f, i) => i).filter(i => F[i][2] && !sel.includes(i));
+    if (faltan.length) return msg(m, 'ojo', `Ojo: te ${faltan.length === 1 ? 'falta 1 fuente útil' : 'faltan ' + faltan.length + ' fuentes útiles'}. Pista: ${F[faltan[0]][3]}`);
     $('#env').disabled = true;
     volar(sel, () => {
       $('#fill').style.height = '25%';
-      msg(m, 'bien', '✅ ¡Extracción lista! Juntaste fuentes <b>internas</b> (cajas, tienda en línea, app) y <b>externas</b> (proveedores).<br>Pero ojo: los datos llegaron <b>sucios</b>. <div class="row"><button class="btn" id="nx">Ir a limpiarlos</button></div>');
+      msg(m, 'bien', '✅ ¡Extracción lista! Juntaste fuentes <b>internas</b> (cajas, tienda en línea, app) y <b>externas</b> (proveedores).<br>Pero ojo: los datos llegaron <b>sucios</b>. <div class="row"><button class="btn" id="nx">Siguiente: etapa 2, Elaboración ➜</button></div>');
       $('#nx').onclick = elaboracion;
     });
   };
 }
-function volar(sel, fin) {
+function volar(sel, fin0) {
+  let hecho = false; const fin = () => { if (!hecho) { hecho = true; fin0(); } };
+  setTimeout(fin, 3500);
   const cube = $('#cube').getBoundingClientRect();
   const cols = ['#F07B00', '#D6338A', '#0E9C94', '#E0A100', '#2E7DD7', '#7B2FD0'];
   let n = 0, total = sel.length * 6;
@@ -302,7 +334,7 @@ function elaboracion() {
   etapa(1);
   const R = [
     { t: 'Producto escrito de 3 formas', d: '<code>Pantalla 50</code> · <code>TV 50 pulg</code> · <code>pantalla50</code>', ok: 'Unificar como "Pantalla 50 pulgadas"', mal: [['Dejar los 3 nombres', 'Si lo dejas así, el sistema cree que son 3 productos distintos y las ventas se dividen.'], ['Borrar los 3 registros', 'Perderías ventas reales. El dato es bueno, solo está escrito distinto.']], fin: '<code>Pantalla 50 pulgadas</code>' },
-    { t: 'Fechas en formatos distintos', d: '<code>15-11-25</code> · <code>2025/11/15</code> · <code>15 nov</code>', ok: 'Convertir todas a un solo formato (2025-11-15)', mal: [['Dejarlas como vienen', 'Con formatos distintos no puedes comparar ventas por día.'], ['Quitar la columna de fecha', 'Sin fecha no sabrías qué día del Buen Fin se vendió más.']], fin: '<code>2025-11-15</code>' },
+    { t: 'Fechas en formatos distintos', d: '<code>28-11-25</code> · <code>2025/11/28</code> · <code>28 nov</code>', ok: 'Convertir todas a un solo formato (2025-11-28)', mal: [['Dejarlas como vienen', 'Con formatos distintos no puedes comparar ventas por día.'], ['Quitar la columna de fecha', 'Sin fecha no sabrías qué día del Black Friday se vendió más.']], fin: '<code>2025-11-28</code>' },
     { t: 'El mismo ticket aparece 2 veces', d: '<code>Ticket 88213 · Monterrey · $8,999</code> (×2)', ok: 'Eliminar el duplicado', mal: [['Sumar los dos', 'Contarías una venta dos veces y creerías que vendiste más de lo real.'], ['Dejar ambos', 'Los duplicados inflan los resultados y llevan a malas decisiones.']], fin: '<code>Ticket 88213 · 1 registro</code>' },
     { t: 'Ciudad mal escrita', d: '<code>Monterey</code> · <code>MTY</code> · <code>Monterrey</code>', ok: 'Homogeneizar como "Monterrey"', mal: [['Crear una tienda nueva llamada "Monterey"', 'Es la misma ciudad. Crear otra tienda partiría sus ventas en dos.']], fin: '<code>Monterrey</code>' },
   ];
@@ -311,28 +343,35 @@ function elaboracion() {
   <section class="card">
     <span class="mis" style="color:var(--rosa)">Etapa 2 · Elaboración</span>
     <h2>Limpia los datos en la banda</h2>
-    <p>Filtrar, limpiar, depurar y <b>homogeneizar</b>: elige qué hacer con cada registro sucio.</p>
+    <p>Los datos llegaron sucios. Hay que filtrarlos, limpiarlos y <b>homogeneizarlos</b>.</p>
+    ${guia('1) Lee el problema del registro. 2) Elige la mejor opción. 3) Presiona <b>«Aplicar limpieza»</b>.')}
     <div class="belt"><div id="rec"></div></div>
     <div class="opts" id="op"></div>
+    <div class="row" id="acc"><button class="btn" id="ap" disabled>🧹 Aplicar limpieza</button></div>
     <div class="msg" id="m"></div>
   </section>`;
   const m = $('#m');
   const pinta = () => {
-    const r = R[k];
-    $('#rec').innerHTML = `<div class="rec"><b>⚠️ ${r.t}</b> <small style="color:var(--suave)">(${k + 1} de ${R.length})</small><br>${r.d}</div>`;
+    const r = R[k]; m.className = 'msg';
+    $('#rec').innerHTML = `<div class="rec"><b>⚠️ Registro ${k + 1} de ${R.length}: ${r.t}</b><br>${r.d}</div>`;
     const ops = [[r.ok, null], ...r.mal].sort(() => Math.random() - .5);
     $('#op').innerHTML = ops.map((o, i) => `<button class="opt" data-i="${i}">${o[0]}</button>`).join('');
-    app.querySelectorAll('#op .opt').forEach(b => b.onclick = () => {
-      const o = ops[+b.dataset.i];
-      if (o[1]) return msg(m, 'ojo', 'Ojo: ' + o[1]);
-      $('#rec').innerHTML = `<div class="rec clean"><b>✅ Limpio</b><br>${r.fin}</div>`;
-      $('#op').innerHTML = ''; msg(m, 'bien', '✅ ¡Bien! Dato limpio y homogéneo.');
+    $('#acc').style.display = 'flex'; $('#ap').disabled = true;
+    const val = elegir($('#op'), $('#ap'));
+    $('#ap').onclick = () => {
+      const o = ops[+val()];
+      if (o[1]) return msg(m, 'ojo', 'Ojo: ' + o[1] + '<br>Elige otra opción y vuelve a presionar «Aplicar limpieza».');
+      $('#rec').innerHTML = `<div class="rec clean"><b>✅ Registro ${k + 1} limpio</b><br>${r.fin}</div>`;
+      $('#op').innerHTML = ''; $('#acc').style.display = 'none';
       k++;
-      setTimeout(() => {
-        if (k < R.length) { m.className = 'msg'; pinta(); }
-        else { m.innerHTML = '✅ ¡Todos los datos están limpios! Ahora sí son <b>confiables</b>. <div class="row"><button class="btn" id="nx">Cargar al almacén</button></div>'; $('#nx').onclick = carga; }
-      }, 900);
-    });
+      if (k < R.length) {
+        msg(m, 'bien', `✅ ¡Bien! Dato limpio y homogéneo. Te faltan ${R.length - k}.<div class="row"><button class="btn" id="nx">Siguiente registro ➜</button></div>`);
+        $('#nx').onclick = pinta;
+      } else {
+        msg(m, 'bien', '✅ ¡Todos los datos están limpios! Ahora sí son <b>confiables</b>.<div class="row"><button class="btn" id="nx">Siguiente: etapa 3, Carga ➜</button></div>');
+        $('#nx').onclick = carga;
+      }
+    };
   };
   pinta();
 }
@@ -349,10 +388,12 @@ function carga() {
     <p style="text-align:center;color:var(--suave)">registros de 3 años de ventas</p>
     <div id="q" style="display:none">
       <p><b>El gerente de Compras solo necesita inventario y proveedores para pedir mercancía. ¿Qué le das?</b></p>
-      <div class="opts">
+      ${guia('Elige una opción y presiona <b>«Confirmar»</b>.')}
+      <div class="opts" id="qo">
         <button class="opt" data-r="0">🏢 Todo el data warehouse empresarial, con ventas, finanzas, recursos humanos y mercadotecnia</button>
         <button class="opt" data-r="1">🏪 Un data mart de Compras, solo con lo que él necesita</button>
       </div>
+      <div class="row"><button class="btn" id="cf" disabled>Confirmar</button></div>
     </div>
     <div class="msg" id="m"></div>
   </section>`;
@@ -365,17 +406,18 @@ function carga() {
     if (Math.random() < .5) tono(400 + p * 600, .03, 'square', .03);
     if (p === 1) { clearInterval(it); sOk(); $('#q').style.display = 'block'; }
   }, 60);
-  app.querySelectorAll('.opt').forEach(b => b.onclick = () => {
-    if (b.dataset.r === '0') return msg(m, 'ojo', 'Ojo: el data warehouse empresarial cubre a toda la empresa. Para un solo departamento conviene un <b>data mart</b>: más pequeño, rápido y enfocado.');
-    b.classList.add('sel'); app.querySelectorAll('.opt').forEach(x => x.style.pointerEvents = 'none');
-    msg(m, 'bien', '✅ ¡Exacto! El <b>data mart</b> es una parte del almacén enfocada en un área. El director, en cambio, usa el <b>data warehouse empresarial</b> para ver todo. <div class="row"><button class="btn" id="nx">Abrir el tablero del director</button></div>');
+  const val = elegir($('#qo'), $('#cf'));
+  $('#cf').onclick = () => {
+    if (val() === '0') return msg(m, 'ojo', 'Ojo: el data warehouse empresarial cubre a toda la empresa. Para un solo departamento conviene un <b>data mart</b>: más pequeño, rápido y enfocado.<br>Elige la otra opción y presiona «Confirmar».');
+    app.querySelector('#qo .pick').classList.add('sel'); app.querySelectorAll('#qo .opt').forEach(x => x.style.pointerEvents = 'none'); $('#cf').style.display = 'none';
+    msg(m, 'bien', '✅ ¡Exacto! El <b>data mart</b> es una parte del almacén enfocada en un área. El director, en cambio, usa el <b>data warehouse empresarial</b> para ver todo. <div class="row"><button class="btn" id="nx">Siguiente: etapa 4, Explotación ➜</button></div>');
     $('#nx').onclick = explotacion;
-  });
+  };
 }
 
 /* ---------- 4. Explotación ---------- */
 const Q = [
-  { q: '¿Qué producto se vendió más el Buen Fin pasado?', sql: "SELECT producto, SUM(unidades) AS vendidas\nFROM ventas\nWHERE evento = 'Buen Fin 2025'\nGROUP BY producto\nORDER BY vendidas DESC;",
+  { q: '¿Qué producto se vendió más el Black Friday pasado?', sql: "SELECT producto, SUM(unidades) AS vendidas\nFROM ventas\nWHERE evento = 'Black Friday 2025'\nGROUP BY producto\nORDER BY vendidas DESC;",
     d: [['Pantallas', 4820], ['Audífonos', 3950], ['Celulares', 3400], ['Laptops', 2100], ['Consolas', 1250]], col: '#07B708', u: '',
     ins: '💡 Las pantallas son el producto estrella: hay que asegurar inventario.' },
   { q: '¿En qué tiendas se agotaron las pantallas?', sql: "SELECT tienda, horas_hasta_agotarse\nFROM inventario\nWHERE producto = 'Pantalla 50 pulgadas'\nORDER BY horas_hasta_agotarse;",
@@ -392,7 +434,9 @@ function explotacion() {
   <section class="card">
     <span class="mis" style="color:var(--morado)">Etapa 4 · Explotación</span>
     <h2>Tablero del director</h2>
-    <p>Haz las <b>3 consultas</b> al data warehouse. Mira bien los resultados: <b>los vas a necesitar</b> en El Buen Fin.</p>
+    <p>Ya tienes los datos limpios y cargados. Ahora haz preguntas al data warehouse. Mira bien los resultados: <b>los vas a necesitar</b> en el Black Friday.</p>
+    ${guia('Toca las <b>3 preguntas</b>, una por una. Al terminar aparecerá el botón <b>Siguiente</b>.')}
+    <div class="cnt" id="cq">Consultas hechas: 0 de 3</div>
     <div class="dash">
       <div class="qbtns">${Q.map((q, i) => `<button class="qb" data-i="${i}">🔎 ${q.q}</button>`).join('')}</div>
       <div class="sql" id="sql">-- Elige una consulta<span class="cur">&nbsp;</span></div>
@@ -419,8 +463,9 @@ function explotacion() {
         setTimeout(() => app.querySelectorAll('#ch .t i').forEach((e, k) => e.style.width = (q.d[k][1] / max * 100) + '%'), 50);
         setTimeout(() => { const ins = $('#ins'); ins.innerHTML = q.ins; ins.style.display = 'block'; sOk(); }, 1100);
         b.classList.add('done'); vistas.add(i); ocupado = false;
+        $('#cq').textContent = 'Consultas hechas: ' + vistas.size + ' de 3' + (vistas.size < 3 ? '  ·  toca la siguiente pregunta' : '  ✔');
         if (vistas.size === Q.length) setTimeout(() => {
-          msg($('#m'), 'bien', '✅ ¡Eso es la <b>explotación</b>: convertir datos en información para decidir! <div class="row"><button class="btn" id="nx">Siguiente</button></div>');
+          msg($('#m'), 'bien', '✅ ¡Eso es la <b>explotación</b>: convertir datos en información para decidir! <div class="row"><button class="btn" id="nx">Siguiente: etapa 5, OLTP u OLAP ➜</button></div>');
           $('#nx').onclick = oltpOlap;
         }, 1300);
       }
@@ -433,7 +478,7 @@ function oltpOlap() {
   etapa(4);
   const C = [
     ['Un cajero cobra una pantalla en Monterrey', 'p', 'Es una operación del día, una transacción: OLTP.'],
-    ['El director compara las ventas de los últimos 3 Buen Fin', 'a', 'Es análisis de datos históricos para decidir: OLAP.'],
+    ['El director compara las ventas de los últimos 3 Black Friday', 'a', 'Es análisis de datos históricos para decidir: OLAP.'],
     ['Un cliente aparta audífonos en la app', 'p', 'Es una transacción en el momento: OLTP.'],
     ['Se pronostica cuántas laptops pedir para diciembre', 'a', 'Pronosticar y presupuestar es análisis: OLAP.'],
     ['Se registra la devolución de un celular', 'p', 'Registrar una operación del día es OLTP.'],
@@ -445,25 +490,25 @@ function oltpOlap() {
     <span class="mis" style="color:var(--azul)">Ronda relámpago</span>
     <h2>¿OLTP u OLAP?</h2>
     <p><b>OLTP</b> registra la operación del día. <b>OLAP</b> analiza para decidir.</p>
+    ${guia('Lee la situación y toca <b>OLTP</b> u <b>OLAP</b>. Después presiona <b>Siguiente situación</b>.')}
     <div class="flash" id="fl"></div>
     <div class="two"><button class="btn oltp" id="bp">🧾 OLTP<br><small>operación</small></button><button class="btn olap" id="ba">📊 OLAP<br><small>análisis</small></button></div>
     <div class="msg" id="m"></div>
   </section>`;
   const m = $('#m');
-  const pinta = () => $('#fl').innerHTML = `${C[k][0]}<br><small style="color:var(--suave);font-weight:400">&nbsp;${k + 1} de ${C.length}</small>`;
+  const pinta = () => { m.className = 'msg'; $('#bp').disabled = $('#ba').disabled = false; $('#fl').innerHTML = `${C[k][0]}<small style="color:var(--suave);font-weight:400;font-size:13px">Situación ${k + 1} de ${C.length}</small>`; };
   const r = v => {
-    if (v !== C[k][1]) return msg(m, 'ojo', 'Ojo: ' + C[k][2]);
-    msg(m, 'bien', '✅ ' + C[k][2]); k++;
-    if (k < C.length) return setTimeout(pinta, 300);
-    $('#bp').disabled = $('#ba').disabled = true;
-    m.innerHTML += '<div class="row"><button class="btn" id="nx">🛒 ¡Empieza El Buen Fin!</button></div>';
+    if (v !== C[k][1]) return msg(m, 'ojo', 'Ojo: ' + C[k][2] + ' Toca la otra opción.');
+    $('#bp').disabled = $('#ba').disabled = true; k++;
+    if (k < C.length) { msg(m, 'bien', '✅ ' + C[k - 1][2] + '<div class="row"><button class="btn" id="nx">Siguiente situación ➜</button></div>'); return $('#nx').onclick = pinta; }
+    msg(m, 'bien', '✅ ' + C[k - 1][2] + '<div class="row"><button class="btn" id="nx">Siguiente: etapa 6, ¡Empieza el Black Friday! 🛒</button></div>');
     $('#nx').onclick = buenFin;
   };
   $('#bp').onclick = () => r('p'); $('#ba').onclick = () => r('a');
   pinta();
 }
 
-/* ---------- 6. Simulador Buen Fin ---------- */
+/* ---------- 6. Simulador Black Friday ---------- */
 function buenFin() {
   etapa(5);
   ventas = 0;
@@ -477,7 +522,7 @@ function buenFin() {
       hint: 'Tablero: la mayoría de los audífonos se compran en la app por la noche.',
       o: [['En la app, esta noche', 1300000, null],
           ['En las tiendas, mañana temprano', 400000, 'En las mañanas es cuando menos audífonos se venden en tienda.'],
-          ['En un anuncio de radio la próxima semana', 100000, 'El Buen Fin ya habrá terminado. La información sirve si llega a tiempo.']] },
+          ['En un anuncio de radio la próxima semana', 100000, 'El Black Friday ya habrá terminado. La información sirve si llega a tiempo.']] },
     { dia: 'Domingo · 12:00 pm', t: '⚠️ Alerta del sistema: "Quedan 40 pantallas en CDMX Norte y se venden 15 por hora". ¿Qué haces?',
       hint: 'Tablero: CDMX Norte se agotó en 18 h el año pasado. Puebla todavía tiene pantallas.',
       o: [['Mover pantallas de Puebla a CDMX Norte hoy mismo', 1500000, null],
@@ -487,12 +532,12 @@ function buenFin() {
       hint: 'Tablero: pantallas y audífonos fueron lo más vendido; las consolas, lo que menos.',
       o: [['Pedir más pantallas y audífonos según los datos de 3 años', 1100000, null],
           ['Pedir más consolas porque "siempre se venden en diciembre"', 300000, 'Es una corazonada. Los datos dicen que las consolas fueron lo que menos se vendió.'],
-          ['Pedir lo mismo que el año pasado', 600000, 'Repetir sin analizar ignora lo que aprendiste en este Buen Fin.']] },
+          ['Pedir lo mismo que el año pasado', 600000, 'Repetir sin analizar ignora lo que aprendiste en este Black Friday.']] },
   ];
   let k = 0;
   app.innerHTML = `
   <section class="sim card">
-    <div class="simtop"><span class="mis" style="color:#FF9BCB">🔴 En vivo · El Buen Fin</span><span class="money" id="money">$0</span></div>
+    <div class="simtop"><span class="mis" style="color:#FF9BCB">🔴 En vivo · Black Friday</span><span class="money" id="money">$0</span></div>
     <div id="al"></div>
     <div class="msg" id="m"></div>
   </section>`;
@@ -511,18 +556,21 @@ function buenFin() {
     const ops = a.o.map((o, i) => [o, i]).sort(() => Math.random() - .5);
     $('#al').innerHTML = `<div class="alert"><div class="hd">${a.dia} · Decisión ${k + 1} de ${A.length}</div><p style="font-size:17px">${a.t}</p></div>
       <div class="hint">📊 ${a.hint}</div>
-      <div class="opts">${ops.map(x => `<button class="opt" data-i="${x[1]}">${x[0][0]}</button>`).join('')}</div>`;
-    app.querySelectorAll('#al .opt').forEach(b => b.onclick = () => {
-      const o = a.o[+b.dataset.i];
-      app.querySelectorAll('#al .opt').forEach(x => x.style.pointerEvents = 'none');
+      ${guia('Lee la alerta, revisa el dato del tablero, elige una decisión y presiona <b>«Confirmar decisión»</b>.')}
+      <div class="opts" id="so">${ops.map(x => `<button class="opt" data-i="${x[1]}">${x[0][0]}</button>`).join('')}</div>
+      <div class="row"><button class="btn" id="cf" disabled>Confirmar decisión</button></div>`;
+    const val = elegir($('#so'), $('#cf'));
+    $('#cf').onclick = () => {
+      const b = app.querySelector('#so .pick'), o = a.o[+val()];
+      app.querySelectorAll('#al .opt').forEach(x => x.style.pointerEvents = 'none'); $('#cf').style.display = 'none';
       b.classList.add('sel');
       const antes = ventas; ventas += o[1]; sube(antes, ventas); sCash();
       if (o[2]) msg(m, 'ojo', `Ojo: ${o[2]}<br>Vendiste <b>${pesos(o[1])}</b>; con los datos pudiste vender <b>${pesos(a.o[0][1])}</b>.`);
       else msg(m, 'bien', `✅ ¡Decisión con datos! Vendiste <b>${pesos(o[1])}</b>.`);
       k++;
-      m.innerHTML += `<div class="row"><button class="btn" id="nx">${k < A.length ? 'Siguiente alerta' : 'Ver resultados'}</button></div>`;
+      m.innerHTML += `<div class="row"><button class="btn" id="nx">${k < A.length ? 'Siguiente alerta ➜' : 'Ver resultados ➜'}</button></div>`;
       $('#nx').onclick = () => k < A.length ? pinta() : resultado(A.reduce((s, x) => s + x.o[0][1], 0));
-    });
+    };
   };
   pinta();
 }
@@ -534,7 +582,7 @@ function resultado(maximo) {
   const pct = Math.round(ventas / maximo * 100);
   app.innerHTML = `
   <section class="card">
-    <h2>📈 Resultado de El Buen Fin</h2>
+    <h2>📈 Resultado del Black Friday</h2>
     <div class="cmp">
       <div class="r"><span>😵 Año pasado ("a ojo")</span><div class="t"><i style="background:#9CA3AF">${pesos(ojo)}</i></div></div>
       <div class="r"><span>🧠 Tú, con data warehouse</span><div class="t"><i style="background:var(--verde)">${pesos(ventas)}</i></div></div>
@@ -556,7 +604,7 @@ function resultado(maximo) {
 function certificado() {
   const fecha = new Date().toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' });
   const tiempo = fmt(segundos);
-  const texto = `🛒 ${nombre} fue Director comercial por un día y vendió ${pesos(ventas)} en El Buen Fin con su data warehouse, en ${tiempo}. Semana 3 · Tecnología de información aplicada a las empresas · UTEL`;
+  const texto = `🛒 ${nombre} fue Director comercial por un día y vendió ${pesos(ventas)} en el Black Friday con su data warehouse, en ${tiempo}. Semana 3 · Tecnología de información aplicada a las empresas · UTEL`;
   const url = location.href;
   app.innerHTML = `
   <section class="card">
@@ -566,7 +614,7 @@ function certificado() {
       <h2>Director comercial por un día</h2>
       <p>Se otorga a</p>
       <div class="nm">${esc(nombre)}</div>
-      <p>por construir el data warehouse de Súper Del Valle (extracción, elaboración, carga y explotación) y decidir con datos en El Buen Fin.</p>
+      <p>por construir el data warehouse de Súper Del Valle (extracción, elaboración, carga y explotación) y decidir con datos en el Black Friday.</p>
       <div class="meta"><span>💰 ${pesos(ventas)}</span><span>⏱️ ${tiempo}</span><span>📅 ${fecha}</span><span>Semana 3</span></div>
       <p style="margin-top:14px"><b>Docente: Dr. Armando Maravilla</b></p>
     </div>
@@ -603,7 +651,7 @@ function historia(tiempo, fecha) {
   x.fillText(nombre.length > 22 ? nombre.slice(0, 22) + '…' : nombre, 540, 970);
   x.fillStyle = '#058A06'; x.font = '800 70px Poppins, sans-serif'; x.fillText(pesos(ventas), 540, 1090);
   x.fillStyle = '#1F2433'; x.font = '500 44px Poppins, sans-serif';
-  x.fillText('vendidos en El Buen Fin', 540, 1150);
+  x.fillText('vendidos en el Black Friday', 540, 1150);
   x.fillText('⏱️ ' + tiempo + '   ·   Semana 3', 540, 1240); x.fillText(fecha, 540, 1305);
   x.font = '700 40px Poppins, sans-serif'; x.fillText('Docente: Dr. Armando Maravilla', 540, 1400);
   x.fillStyle = '#fff'; x.font = '700 50px Poppins, sans-serif'; x.fillText('Data warehouse · UTEL', 540, 1720);
